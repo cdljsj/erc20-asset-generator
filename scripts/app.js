@@ -497,15 +497,15 @@ getEthNetworkId()
     .then(function (networkId) {
         if (networkId === '1') {
             isMainNetwork = true;
-            currentNetwork.text('You are currently at Mainnet').show();
+            currentNetwork.text('你现在正在使用以太坊主网 Mainnet').show();
         } else if (networkId === '3') {
             isRopsten = true;
-            currentNetwork.text('Your are currently at Ropsten testnet.').show();
+            currentNetwork.text('你现在正在使用以太坊测试网络 Ropsten.').show();
         } else if (networkId === '4') {
             isRinkeby = true;
-            currentNetwork.text('Your are currently at Rinkeby testnet.').show();
+            currentNetwork.text('你现在正在使用以太坊测试网络 Rinkeby.').show();
         } else
-            currentNetwork.text('Your current network id is ' + networkId).show();
+            currentNetwork.text('当前网络 id： ' + networkId).show();
     })
     .fail(function (err) {
         console.log(err)
@@ -533,7 +533,7 @@ setInterval(function () {
                     isMetaMaskLocked = false;
                     assetFormInput.prop("disabled", false);
                 }
-                accountAddress.html('<strong>Your Current Address: ' + account[0] + ' </strong>').show();
+                accountAddress.html('<strong>你当前所使用的以太坊账号地址: ' + account[0] + ' </strong>').show();
             }
         })
         .fail(function (err) {
@@ -555,20 +555,20 @@ assetForm.submit(function (e) {
 
 
     if (tokenName === '') {
-        alert('name can\'t be blank')
+        alert('Token 名称不能为空')
     } else if (tokenSymbol === '') {
-        alert('symbol can\'t be blank')
+        alert('Token 标号不能为空')
     } else if (decimalUnits === '') {
-        alert('decimals can\'t be blank')
+        alert('Token 小数点位数不能为空')
     } else if (initialSupply === '') {
-        alert('totalSupply can\'t be blank')
+        alert('Token 总供应量不能为空')
     } else {
         //disable all form input fields
         assetFormInput.prop("disabled", true);
-        statusText.innerHTML = 'Waiting for contract to be deployed...';
+        statusText.innerHTML = '合约部署中...';
         var standardtokenContract = web3.eth.contract(abi);
         var standardtoken = standardtokenContract.new(
-            initialSupply,
+            initialSupply * (10 ** decimalUnits),
             tokenName,
             decimalUnits,
             tokenSymbol,
@@ -580,24 +580,24 @@ assetForm.submit(function (e) {
                     if (!standardtoken.address) {
                         console.log(result);
                         if (isMainNetwork) {
-                            statusText.innerHTML = '<p align="center">Contract deployment is in progress - please be patient. If nothing happens for a while check if there\'s any errors in the console (hit F12).<br> <strong>Transaction hash: </strong><br> <a href="https://etherscan.io/tx/' + result.transactionHash + '" target="_blank">' + result.transactionHash + '</a></p>'
+                            statusText.innerHTML = '<p align="center">合约正在部署中，请耐心等待。<br> <strong>交易哈希: </strong><br> <a href="https://etherscan.io/tx/' + result.transactionHash + '" target="_blank">' + result.transactionHash + '</a></p>'
                         } else if (isRopsten) {
-                            statusText.innerHTML = '<p align="center">Contract deployment is in progress - please be patient. If nothing happens for a while check if there\'s any errors in the console (hit F12). <br> <strong>Transaction hash: </strong><br> <a href="https://ropsten.etherscan.io/tx/' + result.transactionHash + '" target="_blank">' + result.transactionHash + '</a></p>'
+                            statusText.innerHTML = '<p align="center">合约正在部署中，请耐心等待 <br> <strong>交易哈希: </strong><br> <a href="https://ropsten.etherscan.io/tx/' + result.transactionHash + '" target="_blank">' + result.transactionHash + '</a></p>'
                         } else if (isRinkeby) {
-                            statusText.innerHTML = '<p align="center">Contract deployment is in progress - please be patient. If nothing happens for a while check if there\'s any errors in the console (hit F12). <br> <strong> Transaction hash: </strong><br> <a href="https://rinkeby.etherscan.io/tx/' + result.transactionHash + '" target="_blank">' + result.transactionHash + '</a></p>'
+                            statusText.innerHTML = '<p align="center">合约正在部署中，请耐心等待. <br> <strong> Transaction hash: </strong><br> <a href="https://rinkeby.etherscan.io/tx/' + result.transactionHash + '" target="_blank">' + result.transactionHash + '</a></p>'
                         } else
-                            statusText.innerHTML = 'Contract deployment is in progress - please be patient. If nothing happens for a while check if there\'s any errors in the console (hit F12). Transaction hash: ' + result.transactionHash
+                            statusText.innerHTML = '合约正在部署中，请耐心等待。 Transaction hash: ' + result.transactionHash
 
                     } else {
                         console.log(result)
                         if (isMainNetwork) {
-                            statusText.innerHTML = 'Transaction  mined! Contract address: <a href="https://etherscan.io/token/' + standardtoken.address + '" target="_blank">' + standardtoken.address + '</a>'
+                            statusText.innerHTML = '合约部署成功。 合约地址: <a href="https://etherscan.io/token/' + standardtoken.address + '" target="_blank">' + standardtoken.address + '</a>'
                         } else if (isRopsten) {
-                            statusText.innerHTML = 'Transaction  mined! Contract address: <a href="https://ropsten.etherscan.io/token/' + standardtoken.address + '" target="_blank">' + standardtoken.address + '</a>'
+                            statusText.innerHTML = '合约部署成功。 合约地址: <a href="https://ropsten.etherscan.io/token/' + standardtoken.address + '" target="_blank">' + standardtoken.address + '</a>'
                         } else if (isRinkeby) {
-                            statusText.innerHTML = 'Transaction  mined! Contract address: <a href="https://rinkeby.etherscan.io/token/' + standardtoken.address + '" target="_blank">' + standardtoken.address + '</a>'
+                            statusText.innerHTML = '合约部署成功。 合约地址: <a href="https://rinkeby.etherscan.io/token/' + standardtoken.address + '" target="_blank">' + standardtoken.address + '</a>'
                         } else
-                            statusText.innerHTML = 'Contract deployed at address <b>' + standardtoken.address + '</b> - keep a record of this.'
+                            statusText.innerHTML = '合约已经在地址 <b>' + standardtoken.address + '</b> - keep a record of 上部署好了，请注意保存.'
                     }
                 }
                 else {
